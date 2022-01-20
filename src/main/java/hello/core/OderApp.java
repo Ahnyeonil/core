@@ -19,6 +19,8 @@ public class OderApp {
         //MemberService memberService = new MemberServiceImpl();
         //OrderService orderService = new OrderServiceImpl(memberRepository);
 
+        /* ApplicationContext --> 스프링 컨테이너 */
+        /* ApplicationContext --> 인터페이스 */
         ApplicationContext applicationContext = new AnnotationConfigApplicationContext(AppConfig.class);
         MemberService memberService = applicationContext.getBean("memberService", MemberService.class);
         OrderService orderService = applicationContext.getBean("orderService", OrderService.class);

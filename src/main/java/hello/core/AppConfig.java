@@ -28,16 +28,16 @@ public class AppConfig {
     }
 
     @Bean
-    public DiscountPolicy discountPolicy() {
-        // return new FixDiscountPolicy();
-        return new RateDiscountPolicy();
-    }
-
-    @Bean
     public OrderService orderService() {
         return new OrderServiceImpl(
                 memberRepository(),
                 discountPolicy()
         );
+    }
+
+    @Bean
+    public DiscountPolicy discountPolicy() {
+        // return new FixDiscountPolicy();
+        return new RateDiscountPolicy();
     }
 }
