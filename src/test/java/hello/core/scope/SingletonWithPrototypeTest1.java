@@ -2,11 +2,14 @@ package hello.core.scope;
 
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Scope;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.inject.Provider;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -38,15 +41,27 @@ public class SingletonWithPrototypeTest1 {
         // prototype은 사용할때마다 새로 생성
         ClientBean clientBean2 = ac.getBean(ClientBean.class);
         int count2 = clientBean2.logic();
-        assertThat(count2).isEqualTo(2);
+        assertThat(count2).isEqualTo(1);
     }
 
     @Scope("singleton")
-    @RequiredArgsConstructor
+    /*@RequiredArgsConstructor*/
     static class ClientBean{
 
         // Bean 생성시점에 주입
-        private final PrototypeBean prototypeBean;
+        /*private final PrototypeBean prototypeBean;*/
+
+        // ObjectProvider -> prototypeBean 찾아주는 기능
+        // ObjectProvider( 편의 기능 다수 보유 ) == ObjectFactory
+        // ObjectProvider 스프링의 DL(Dependency Lookup)기능 제공
+        // ObjectProvider -> 스프링에 의존
+        /*@Autowired
+        private ObjectProvider<PrototypeBean> prototypeBeanProvider;*/
+
+        // 자바 표준 -> 라이브러리 필수
+        /* implementation 'javax.inject:javax.inject:1' */
+        @Autowired
+        private Provider<PrototypeBean> prototypeBeanProvider;
 /*
         // lombok 사용으로 생략
         public CientBean(PrototypeBean prototypeBean) {
@@ -54,6 +69,8 @@ public class SingletonWithPrototypeTest1 {
         }
 */
         public int logic(){
+            /*PrototypeBean prototypeBean = prototypeBeanProvider.getObject();*/
+            PrototypeBean prototypeBean = prototypeBeanProvider.get();
             prototypeBean.addCount();
             int count = prototypeBean.getCount();
             return count;
